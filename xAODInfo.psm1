@@ -43,6 +43,9 @@ function Get-BasicPackageInfo ([string] $filename)
     $dlist = (Get-ChildItem -Path $filename).FullName -split "\\"
     $r["Package"] = $dlist[$dlist.IndexOf("trunk")-1]
 
+    # Other info
+    $r["IsTriggerPackage"] = $filename.Contains("xAODTrig")
+
     return $r
 }
 
@@ -50,6 +53,7 @@ function Get-BasicPackageInfo ([string] $filename)
 function Get-ClassDefMetaData ($classDefInfo) {
     $r = @{}
     $r["HasV1"] = $classDefInfo["ObjectName"].Contains("_v")
+    $r["IsContainer"] = $classDefInfo["ObjectName"].Contains("Container")
 
     return $r
 }
