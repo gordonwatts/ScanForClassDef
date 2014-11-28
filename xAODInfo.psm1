@@ -5,6 +5,11 @@
 # Get info from a single file.
 function Get-ClassDefMacroInfoFile ([string] $Path)
 {
+    # Does this file mention XAOD_STANDALONE?
+    $xaoddefs = Get-Content -Path $Path | ? {$_.Contains("XAOD_STANDALONE")}
+    $hasXAOD = $xaoddefs.Count -gt 0
+
+    # And count the class def's so we can analyze them.
     $cdefs = Get-Content -Path $Path | ? {$_.Contains("CLASS_DEF") -and $_.Contains("(")}
     $all = @()
     foreach ($cd in $cdefs) {
@@ -23,6 +28,7 @@ function Get-ClassDefMacroInfoFile ([string] $Path)
         $r["id"] = $cdArgs[1].Trim()
         $r["Version"] = $cdArgs[2].Replace(")","").Trim()
         $r["Path"] = Get-ChildItem -Path $Path
+        $r["HasXAODStandalone"] = $hasXAOD
 
         $all += $r
     }
